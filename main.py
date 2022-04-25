@@ -2,13 +2,19 @@ import CVRP
 import City
 import TabuSearch
 from TabuSearch import*
+from ACO import*
 from math import sqrt
 
 class args:
     maxIter=1500
     numNeighbors=2048
     maxTabu=20
-    localOptStop=25
+    localOptStop=100
+    A = 3
+    B = 4
+    Q = 1000
+    P = 0.1
+
 
 
 def getInput():
@@ -81,5 +87,5 @@ if __name__ == '__main__':
     myargs= args()
 
     problem= getInput()
-    TabuSearch.tabuSearch(problem,myargs)
+    ACO(problem,myargs)
     problem.printSolution()
