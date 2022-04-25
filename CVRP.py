@@ -1,7 +1,8 @@
 class CVRP:
 
-    def __init__(self, distanceMatrix, cities, capacity, size):
+    def __init__(self, distanceMatrix,depot, cities, capacity, size):
         self.distanceMatrix = distanceMatrix
+        self.depot = depot
         self.cities = cities
         self.capacity = capacity
         self.size = size
