@@ -5,7 +5,7 @@ from TabuSearch import *
 from SimAnnealing import *
 from ACO import *
 from math import sqrt
-
+from GA import *
 
 class args:
     maxIter = 1500
@@ -92,5 +92,6 @@ if __name__ == '__main__':
     myargs = args()
 
     problem = getInput()
-    simulatedAnnealing(problem, myargs)
+    ga = GA(problem)
+    ga.run()
     problem.printSolution()
