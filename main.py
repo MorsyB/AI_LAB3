@@ -1,19 +1,23 @@
 import CVRP
 import City
 import TabuSearch
-from TabuSearch import*
-from ACO import*
+from TabuSearch import *
+from SimAnnealing import *
+from ACO import *
 from math import sqrt
 
+
 class args:
-    maxIter=1500
-    numNeighbors=2048
-    maxTabu=20
-    localOptStop=100
+    maxIter = 1500
+    numNeighbors = 2048
+    maxTabu = 20
+    localOptStop = 25
     A = 3
     B = 4
     Q = 1000
     P = 0.1
+    alpha = 0.5
+    temperature = 100
 
 
 
@@ -83,9 +87,10 @@ def distance(city1, city2):
 
     return sqrt(dx + dy)
 
-if __name__ == '__main__':
-    myargs= args()
 
-    problem= getInput()
-    ACO(problem,myargs)
+if __name__ == '__main__':
+    myargs = args()
+
+    problem = getInput()
+    simulatedAnnealing(problem, myargs)
     problem.printSolution()
