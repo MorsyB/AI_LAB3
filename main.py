@@ -7,6 +7,7 @@ from ACO import *
 from math import sqrt
 from GA import *
 
+
 class args:
     maxIter = 1500
     numNeighbors = 2048
@@ -18,7 +19,6 @@ class args:
     P = 0.1
     alpha = 0.5
     temperature = 100
-
 
 
 def getInput():
@@ -92,7 +92,6 @@ if __name__ == '__main__':
     myargs = args()
 
     problem = getInput()
-    #ga = GA(problem)
-    ACO(problem,myargs)
-    #ga.run()
+    ga = GA(problem)
+    ga.run()
     problem.printSolution()
