@@ -118,4 +118,5 @@ class GA:
             self.CVRP.bestFitness = self.population[0].fitness
             self.print_best()
             print()
+
             print()
