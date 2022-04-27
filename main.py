@@ -6,7 +6,7 @@ from SimAnnealing import *
 from ACO import *
 from math import sqrt
 from GA import *
-
+import PSO
 
 class args:
     maxIter = 1500
@@ -92,6 +92,8 @@ if __name__ == '__main__':
     myargs = args()
 
     problem = getInput()
-    ga = GA(problem)
-    ga.run()
+    #ga = GA(problem)
+    #ga.run()
+    pso = PSO.PSO(problem)
+    pso.run()
     problem.printSolution()
