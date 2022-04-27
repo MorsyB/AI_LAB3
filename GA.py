@@ -1,10 +1,11 @@
-from random import randint, random
+from random import  random, shuffle, randint, choice
+
 
 popsize = 2048
 size = 10
 elite_rate = 0.1
 mutation = random() * 0.25
-maxIter = 150
+maxIter = 1500
 
 
 def init_sol(problem):  # TSP: nearest neighbor heuristic
@@ -48,7 +49,6 @@ class GA:
         for i in range(popsize):
             randStr1 = init_sol(self.CVRP)
             randStr2 = init_sol(self.CVRP)
-
             member1 = GAstruct(randStr1, 0)
             member2 = GAstruct(randStr2, 0)
             self.population.append(member1)
@@ -69,10 +69,10 @@ class GA:
 
             for j in range(len(arr)):
                 if j + 1 not in arr:
-                    fitness += 100
+                    fitness += 1000
             for j in range(len(arr)):
                 if j + 1 not in arr2:
-                    fitness2 += 100
+                    fitness2 += 1000
             self.population[i].fitness = fitness
             self.buffer[i].fitness = fitness2
 
@@ -80,6 +80,82 @@ class GA:
         temp = self.population
         self.population = self.buffer
         self.buffer = temp
+
+    def pmx(self):
+        esize = popsize * elite_rate
+        size = self.CVRP.size
+        for i in range(int(esize), popsize):
+            i1 = randint(0, popsize / 2)
+            i2 = randint(0, popsize / 2)
+            i3 = randint(0, size - 1)
+            secondCitizenQueen = self.population[i2].str[i3]
+            for j in range(1, size):
+                self.buffer[i].str[j] = self.population[i1].str[j]
+            for j in range(size):
+                if self.population[i1].str[j] == secondCitizenQueen:
+                    self.buffer[i].str[j] = self.population[i1].str[i3]
+                    self.buffer[i].str[i3] = self.population[i1].str[j]
+                    break
+            if random() < mutation:
+                self.random_mutation(i)
+        self.swap()
+
+    def findFirstIndex(self, indicesArray):
+        size = self.CVRP.size
+        if len(indicesArray) == 0:
+            return 0
+        i = 1
+        while i < size:
+            if i not in indicesArray:
+                return i
+            i += 1
+        return i
+
+
+    def cx(self):
+        # here we start from parent 1 then do the cycle and keep coping from parent 1
+        # when the cycle is finished we do another cycle and copy from parent 2
+        # keep on doing this 2 things until we moved over all indeces
+        esize = popsize * elite_rate
+        size = self.CVRP.size
+        for i in range(int(esize), popsize):
+            i1 = randint(0, popsize - 1)
+            i2 = randint(0, popsize- 1)
+            parent1 = self.population[i1].str
+            parent2 = self.population[i2].str
+            indicesArray = []
+            child = []
+            odd = False
+            while len(indicesArray) < size:
+                firstIndex = self.findFirstIndex(indicesArray)
+                index = firstIndex
+                while True and firstIndex < size:
+                    indicesArray.append(index)
+                    if odd:
+                        child.append(parent1[index])
+                        index = parent1.index(parent2[index])
+                    else:
+                        child.append(parent2[index])
+                        index = parent1.index(parent2[index])
+                    if index == firstIndex:
+                        break
+                odd = not odd
+            self.buffer[i].str = child
+            if random() < mutation:
+                self.random_mutation(i)
+        self.swap()
+
+
+    def random_mutation(self, i):
+        # take part of the array shuffle it put it back
+        size = self.CVRP.size
+        member = self.buffer[i].str
+        i1 = randint(0,size  - 3)
+        i2 = randint(i1 + 1, size - 2)
+        newHdak = member[i1:i2]
+        shuffle(newHdak)
+        self.buffer[i].str = member[0:i1] + newHdak + member[i2:]
+
 
     def mate(self):
         esize = popsize * elite_rate
@@ -105,18 +181,10 @@ class GA:
 
     def run(self):
         for i in range(maxIter):
-            print()
-            print()
-            print(self.population[0].fitness)
             self.calc_fitness()
-            print(self.population[0].fitness)
             self.sort_by_fitness()
-            print(self.population[0].fitness)
-            self.mate()
-            print(self.population[0].fitness)
+            self.cx()
             self.CVRP.best = self.population[0].str
             self.CVRP.bestFitness = self.population[0].fitness
             self.print_best()
-            print()
-
-            print()
+            #print()

@@ -92,6 +92,7 @@ if __name__ == '__main__':
     myargs = args()
 
     problem = getInput()
-    ga = GA(problem)
-    ga.run()
+    #ga = GA(problem)
+    ACO(problem,myargs)
+    #ga.run()
     problem.printSolution()
