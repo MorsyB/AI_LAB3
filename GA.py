@@ -1,11 +1,11 @@
 from random import  random, shuffle, randint, choice
-
+import Graph
 
 popsize = 2048
 size = 10
 elite_rate = 0.1
 mutation = random() * 0.25
-maxIter = 1500
+maxIter = 500
 
 
 def init_sol(problem):  # TSP: nearest neighbor heuristic
@@ -145,6 +145,14 @@ class GA:
                 self.random_mutation(i)
         self.swap()
 
+    def random_immigrant(self):
+        esize = popsize* 0.9
+        tsize = self.CVRP.size
+        for i in range(int(esize), popsize):
+            i1 = randint(0, int(esize))
+            self.population[i] = self.population[i1]
+            if random() <mutation:
+                self.random_mutation(i)
 
     def random_mutation(self, i):
         # take part of the array shuffle it put it back
@@ -180,11 +188,15 @@ class GA:
         print("Best: ", self.population[0].str, " (", self.population[0].fitness, ")")
 
     def run(self):
+        myarr=[]
         for i in range(maxIter):
             self.calc_fitness()
             self.sort_by_fitness()
-            self.cx()
+            self.pmx()
+            #self.random_immigrant()
             self.CVRP.best = self.population[0].str
             self.CVRP.bestFitness = self.population[0].fitness
             self.print_best()
+            myarr.append(self.population[0].fitness)
             #print()
+        Graph.draw(myarr,"fit")

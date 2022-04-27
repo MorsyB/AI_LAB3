@@ -2,9 +2,11 @@ from math import pow
 from random import randint
 from numpy.random import choice
 import time
+import Graph
 
 
 def ACO(problem, args):
+    myarray=[]
     startTime = time.time()
     pheremonMatrix = [[float(1000) for _ in range(problem.size)] for _ in range(problem.size)]
     bestPath = []
@@ -30,6 +32,7 @@ def ACO(problem, args):
         if bestFitness < globalFitness:# update the best solution found untill now
             globalBest = bestPath
             globalFitness = bestFitness
+        myarray.append(globalFitness)
         updatePheremons(pheremonMatrix, tempPath, tempFitness, args.Q, args.P)
         print('Generation time: ', time.time() - iterTime)
         print('sol = ', bestPath)
@@ -45,7 +48,9 @@ def ACO(problem, args):
             bestFitness = float('inf')
             currentBestPath = []
             currentBestFitness = float('inf')
+
     print('Time elapsed: ', time.time() - startTime)
+    Graph.draw(myarray,"hi")
     problem.best = globalBest   # save the solution and its fitness
     problem.bestFitness = globalFitness
 
