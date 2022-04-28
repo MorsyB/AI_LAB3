@@ -1,6 +1,8 @@
 import time
 from random import randint
 
+import Graph
+
 
 def initGreedySol(size, problem):   # TSP: nearest neighbor heuristic
     array = []
@@ -53,6 +55,7 @@ def simpleInversionMutation(sol):
 
 def tabuSearch(problem, args):
     startTime = time.time()
+    points = []
     best = initGreedySol(problem.size, problem)
     bestFitness, _ = problem.calcPathCost(best)
     bestCandidate = best
@@ -94,10 +97,12 @@ def tabuSearch(problem, args):
             bestFitness, _ = problem.calcPathCost(best)
             local_counter = 0
             tabuDict = {str(bestCandidate): True}
+        points.append(bestFitness)
         print('Generation time: ', time.time() - iterTime)
         print('sol = ', best)
         print('cost = ', bestFitness)
         print()
     print('Time elapsed: ', time.time() - startTime)
     problem.best = globalBest   # save the solution and its fitness
+    Graph.draw(points)
     problem.bestFitness = globalFitness

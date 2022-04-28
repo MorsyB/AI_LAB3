@@ -8,6 +8,7 @@ from math import sqrt
 from GA import *
 import PSO
 
+
 class args:
     maxIter = 1500
     numNeighbors = 2048
@@ -21,8 +22,8 @@ class args:
     temperature = 100
 
 
-def getInput():
-    file = open('test1' + '.txt', 'r')  # input string
+def get_input(input_file):
+    file = open(input_file + '.txt', 'r')  # input string
     for _ in range(3):
         file.readline()
 
@@ -88,12 +89,53 @@ def distance(city1, city2):
     return sqrt(dx + dy)
 
 
-if __name__ == '__main__':
-    myargs = args()
-
-    problem = getInput()
-    #ga = GA(problem)
-    #ga.run()
-    pso = PSO.PSO(problem)
-    pso.run()
+def genetic(problem):
+    ga = GA(problem)
+    ga.run()
     problem.printSolution()
+
+
+def ant(problem):
+    ACO(problem, args())
+    problem.printSolution()
+
+
+def simulated(problem):
+    simulatedAnnealing(problem, args())
+    problem.printSolution()
+
+
+def tabu(problem):
+    tabuSearch(problem, args())
+    problem.printSolution()
+
+
+if __name__ == '__main__':
+    running = True
+    print('#########################################################################')
+    print('LAB 3')
+    print('MORSY BIADSY ID:318241221 \t SAMER NAJJAR ID:207477522')
+    print('#########################################################################')
+    while running:
+        print()
+        print('CHOOSE INPUT EXAMPLE:')
+        input_file = input('1 --> E-n22-k4 \t 2 --> E-n33-k4 \t 3 --> E-n51-k5 \t 4 --> E-n76-k10 \t 5 --> EXIT\n')
+
+        # EXIT
+        if int(input_file) == 5:
+            break
+
+        # INPUT FILE
+        problem = get_input(input_file)
+
+        # CHOOSE PROBLEM
+        solution = int(input('1 --> GA \t 2 --> ACO \t 3 --> SIMU \t 4 --> TABU\n'))
+        if solution == 1:
+            genetic(problem)
+        if solution == 2:
+            ant(problem)
+        if solution == 3:
+            simulated(problem)
+        if solution == 4:
+            tabu(problem)
+

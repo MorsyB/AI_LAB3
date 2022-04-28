@@ -1,4 +1,5 @@
-from random import  random, shuffle, randint, choice
+import time
+from random import random, shuffle, randint, choice
 import Graph
 
 popsize = 2048
@@ -111,7 +112,6 @@ class GA:
             i += 1
         return i
 
-
     def cx(self):
         # here we start from parent 1 then do the cycle and keep coping from parent 1
         # when the cycle is finished we do another cycle and copy from parent 2
@@ -120,7 +120,7 @@ class GA:
         size = self.CVRP.size
         for i in range(int(esize), popsize):
             i1 = randint(0, popsize - 1)
-            i2 = randint(0, popsize- 1)
+            i2 = randint(0, popsize - 1)
             parent1 = self.population[i1].str
             parent2 = self.population[i2].str
             indicesArray = []
@@ -146,24 +146,23 @@ class GA:
         self.swap()
 
     def random_immigrant(self):
-        esize = popsize* 0.9
+        esize = popsize * 0.9
         tsize = self.CVRP.size
         for i in range(int(esize), popsize):
             i1 = randint(0, int(esize))
             self.population[i] = self.population[i1]
-            if random() <mutation:
+            if random() < mutation:
                 self.random_mutation(i)
 
     def random_mutation(self, i):
         # take part of the array shuffle it put it back
         size = self.CVRP.size
         member = self.buffer[i].str
-        i1 = randint(0,size  - 3)
+        i1 = randint(0, size - 3)
         i2 = randint(i1 + 1, size - 2)
         newHdak = member[i1:i2]
         shuffle(newHdak)
         self.buffer[i].str = member[0:i1] + newHdak + member[i2:]
-
 
     def mate(self):
         esize = popsize * elite_rate
@@ -185,18 +184,23 @@ class GA:
         self.buffer[i].str[i2] = tmp
 
     def print_best(self):
-        print("Best: ", self.population[0].str, " (", self.population[0].fitness, ")")
+        print("sol = ", self.population[0].str)
+        print('cost = ', self.population[0].fitness)
+        print()
 
     def run(self):
-        myarr=[]
+        startTime = time.time()
+        myarr = []
         for i in range(maxIter):
+            iterTime = time.time()
             self.calc_fitness()
             self.sort_by_fitness()
             self.pmx()
-            #self.random_immigrant()
+            # self.random_immigrant()
             self.CVRP.best = self.population[0].str
             self.CVRP.bestFitness = self.population[0].fitness
+            print('Generation time: ', time.time() - iterTime)
             self.print_best()
             myarr.append(self.population[0].fitness)
-            #print()
-        Graph.draw(myarr,"fit")
+            # print()
+        Graph.draw(myarr)
