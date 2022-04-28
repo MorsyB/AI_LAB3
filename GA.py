@@ -1,6 +1,7 @@
 import time
 from random import random, shuffle, randint, choice
 import Graph
+import numpy
 
 popsize = 2048
 size = 10
@@ -37,6 +38,7 @@ class GAstruct:
     def __init__(self, string, fitness):
         self.str = string
         self.fitness = fitness
+        self.specynum=0
 
 
 class GA:
@@ -45,6 +47,8 @@ class GA:
         self.buffer = []
         self.CVRP = CVRP
         self.init_population()
+        self.threshhold=0.5
+        self.species=[]
 
     def init_population(self):
         for i in range(popsize):
@@ -60,6 +64,49 @@ class GA:
 
     def fitness_sort(self, x):
         return x.fitness
+
+    def distance(self, firstIndex, secondIndex):
+        # values1 = self.population[firstIndex]
+        # values2 = self.population[secondIndex]
+        """Compute the Kendall tau distance."""
+        values1 = firstIndex.NQueens
+        values2 = secondIndex.NQueens
+        n = len(values1)
+        assert len(values2) == n, "Both lists have to be of equal length"
+        i, j = numpy.meshgrid(numpy.arange(n), numpy.arange(n))
+        a = numpy.argsort(values1)
+        b = numpy.argsort(values2)
+        ndisordered = numpy.logical_or(numpy.logical_and(a[i] < a[j], b[i] > b[j]),
+                                       numpy.logical_and(a[i] > a[j], b[i] < b[j])).sum()
+        # print(ndisordered / (n * (n - 1)))
+        return ndisordered / (n * (n - 1))
+
+
+    def Threshhold_spec(self):
+        numberof_species = -1
+        for i in range(self.GA_POPSIZE):
+            flag = 0
+            for j in range(len(self.species)):
+                counter = 0
+                for k in range(len(self.species[j])):
+                    destence = self.distance(self.population[i], self.species[j][k])
+                    if destence < self.threshhold:
+                        counter += 1
+                if counter == len(self.species[j]):
+                    flag = 1
+                    self.population[i].specynum = j
+                    self.species[j].append(self.population[i])
+                    break
+            if flag == 0:
+                new_array = []
+                self.population[i].specynum = len(self.species)
+                new_array.append(self.population[i])
+                self.species.append(new_array)
+                numberof_species += 1
+
+
+
+
 
     def calc_fitness(self):
         for i in range(popsize):

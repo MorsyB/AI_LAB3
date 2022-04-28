@@ -57,7 +57,7 @@ def tabuSearch(problem, args):
     startTime = time.time()
     points = []
     best = initGreedySol(problem.size, problem)
-    bestFitness, _ = problem.calcPathCost(best)
+    bestFitness, mypath = problem.calcPathCost(best)
     bestCandidate = best
     globalBest = best
     globalFitness = bestFitness

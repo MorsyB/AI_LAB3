@@ -1,5 +1,8 @@
 from random import randint, random
 import time
+import copy
+import functools
+import operator
 
 import numpy
 
@@ -8,7 +11,9 @@ MAX_ASCII = 122
 popsize = 2048
 elite_rate = 0.1
 mutation = random() * 0.25
-maxIter = 150
+maxIter = 3000
+iters = 3
+runs=3
 
 
 def init_sol(problem):  # TSP: nearest neighbor heuristic
@@ -85,7 +90,6 @@ class PSO:
         for i in range(popsize):
             fitness, path = self.CVRP.calcPathCost(self.population[i].str)
             arr = self.population[i].str
-
             for j in range(len(arr)):
                 if j + 1 not in arr:
                     fitness += 1000
@@ -93,6 +97,7 @@ class PSO:
             if self.population[i].personalbestfittnes == -1 or self.population[i].personalbestfittnes > fitness:
                 self.population[i].personalbestfittnes = fitness
                 self.population[i].selfBest = self.population[i].str
+
 
 
     def fitness_sort(self, x):
@@ -107,7 +112,7 @@ class PSO:
         self.C2 = 3 * (t / N) + 0.5
 
     def print_best(self, global_best, fit):
-        print("Best: ", self.population[0].str, " (", self.population[0].fitness, ")")
+        print("Best: ", self.population[0].str, " (",self.population[0].fitness, ")")
 
     def run(self):
         self.calc_fitness()
@@ -118,6 +123,7 @@ class PSO:
         start = time.time()
 
         for index in range(int(maxIter)):
+
             self.update_parameters(index, maxIter)
             self.calc_fitness()
             self.sort_by_fitness()
@@ -140,15 +146,42 @@ class PSO:
                     # here we calculate the new string for each parcial
                     # and update the velocity and position of it
                     # using the formulas we saw in the lecture
-
                     num1 = rand1 * self.C1 * (self.population[j].selfBest[k] - self.population[j].str[k])
                     num2 = rand2 * self.C2 * (global_best[k] - self.population[j].str[k])
                     num3 = self.W * (self.population[j].velocity[k])
                     num4 = num1 + num2 + num3
+                    num6=(int(num4) % self.CVRP.size) +1
+                    #while num6 in arr1:
+                        #num6= randint(1,self.CVRP.size)
+                    arr1.append(num6)
 
-                    arr1.append(int(num4) % self.CVRP.size)
-                    num5 = arr1[k] + self.population[j].str[k]
-                    arr2.append(int(num5) % self.CVRP.size)
+                    num5 = (arr1[k] + self.population[j].str[k])%self.CVRP.size+1
+                    #while num5 in arr2:
+                     ##   num5= randint(1,self.CVRP.size)
+                    arr2.append(num5)
 
                 self.population[j].velocity = arr1
                 self.population[j].str = arr2
+                #print(arr2)
+
+
+    def cooperative_pso(self):
+        global_best =  float('inf')
+        self.init_population()
+        self.calc_fitness()
+        self.sort_by_fitness()
+        for i in range(iters):
+
+            local_array = []
+            for j in range(runs):
+                local_array.append((self.pso_run()))
+            self.update_parameters(iters,runs)
+
+            local_best = self.cross_over(local_array)
+
+            local_fitness= self.calc_fitness(local_best)
+            if local_fitness < global_best:
+                self.CVRP.best = copy.deepcopy(local_best)
+                global_best = local_fitness
+                self.CVRP.bestFitness=local_fitness
+
