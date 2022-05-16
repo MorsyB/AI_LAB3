@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def draw(y, title='Fitness Graph'):
+def draw(y, title='Fitness'):
     x = []
     # x axis values
     for i in range(len(y)):
@@ -12,9 +12,9 @@ def draw(y, title='Fitness Graph'):
     plt.plot(x, y)
 
     # naming the x axis
-    plt.xlabel('Iteration')
+    #plt.xlabel('Iteration')
     # naming the y axis
-    plt.ylabel('Min Fitness')
+    #plt.ylabel('Min Fitness')
 
     # giving a title to my graph
     plt.title(title)

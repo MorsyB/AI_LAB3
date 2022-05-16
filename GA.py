@@ -7,7 +7,7 @@ popsize = 2048
 size = 10
 elite_rate = 0.1
 mutation = random() * 0.25
-maxIter = 500
+maxIter = 2500
 
 
 def init_sol(problem):  # TSP: nearest neighbor heuristic

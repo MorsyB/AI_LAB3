@@ -6,6 +6,7 @@ from SimAnnealing import *
 from ACO import *
 from math import sqrt
 from GA import *
+from Ackley import *
 import PSO
 
 
@@ -129,7 +130,7 @@ if __name__ == '__main__':
         problem = get_input(input_file)
 
         # CHOOSE PROBLEM
-        solution = int(input('1 --> GA \t 2 --> ACO \t 3 --> SIMU \t 4 --> TABU\n'))
+        solution = int(input('1 --> GA \t 2 --> ACO \t 3 --> SIMU \t 4 --> TABU\t 5--->ackeley\n'))
         if solution == 1:
             genetic(problem)
         if solution == 2:
@@ -138,4 +139,8 @@ if __name__ == '__main__':
             simulated(problem)
         if solution == 4:
             tabu(problem)
+        if solution==5:
+            Ackley1= Ackley(2048)
+            Ackley1.run()
+
 

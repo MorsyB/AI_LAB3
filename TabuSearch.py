@@ -97,7 +97,7 @@ def tabuSearch(problem, args):
             bestFitness, _ = problem.calcPathCost(best)
             local_counter = 0
             tabuDict = {str(bestCandidate): True}
-        points.append(bestFitness)
+        points.append(globalFitness)
         print('Generation time: ', time.time() - iterTime)
         print('sol = ', best)
         print('cost = ', bestFitness)
