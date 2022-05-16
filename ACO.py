@@ -112,3 +112,55 @@ def updatePheremons(pheremonMatrix, bestPath, pathCost, q, p):
             pheremonMatrix[i][j] = float(num1 + num2)
             if pheremonMatrix[i][j] < 0.0001:
                 pheremonMatrix[i][j] = 0.0001
+
+
+
+
+def ACOAckley( args):
+    myarray=[]
+    startTime = time.time()
+    pheremonMatrix = [[float(1000) for _ in range(10)] for _ in range(10)]
+    bestPath = []
+    bestFitness = float('inf')
+    currentBestPath = []
+    currentBestFitness = float('inf')
+    globalBest = []
+    globalFitness = float('inf')
+    local_counter = 0
+    for _ in range(args.maxIter):
+        iterTime = time.time()
+        tempPath = getPath(problem, pheremonMatrix, args)
+        tempFitness, _ = problem.calcPathCost(tempPath)
+        if tempFitness < currentBestFitness:
+            currentBestFitness = tempFitness
+            currentBestPath = tempPath
+        if currentBestFitness < bestFitness:  # update best (take a step towards the better neighbor)
+            bestFitness = currentBestFitness
+            bestPath = currentBestPath
+            local_counter = 0
+        if currentBestFitness == bestFitness:   # to detect local optimum
+            local_counter += 1
+        if bestFitness < globalFitness:# update the best solution found untill now
+            globalBest = bestPath
+            globalFitness = bestFitness
+        myarray.append(globalFitness)
+        updatePheremons(pheremonMatrix, tempPath, tempFitness, args.Q, args.P)
+        print('Generation time: ', time.time() - iterTime)
+        print('sol = ', bestPath)
+        print('cost = ', bestFitness)
+        print()
+        if local_counter == args.localOptStop:  # if fallen into local optimum, reset and continue with the algorithm
+            pheremonMatrix = [[float(1000) for _ in range(problem.size)] for _ in range(problem.size)]
+            local_counter = 0
+            if bestFitness < globalFitness:
+                globalBest = bestPath
+                globalFitness = bestFitness
+            bestPath = []
+            bestFitness = float('inf')
+            currentBestPath = []
+            currentBestFitness = float('inf')
+
+    print('Time elapsed: ', time.time() - startTime)
+    Graph.draw(myarray,"hi")
+    problem.best = globalBest   # save the solution and its fitness
+    problem.bestFitness = globalFitness

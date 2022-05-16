@@ -142,5 +142,6 @@ if __name__ == '__main__':
         if solution==5:
             Ackley1= Ackley(2048)
             Ackley1.run()
-
+        if solution==6:
+            tabuSearchAckley(args)
 
