@@ -111,7 +111,7 @@ def tabuSearch(problem, args):
 def init_ackeley():
     myarr = []
     for j in range(10):
-        mynum = randint(-32768, 32768)
+        mynum = randint(-32, 32)
         myarr.append(mynum)
 
     return myarr
@@ -189,3 +189,4 @@ def tabuSearchAckley(args):
     print('Time elapsed: ', time.time() - startTime)
     print("final sol",globalBest)  # save the solution and its fitness
     print("final fit",globalFitness)
+

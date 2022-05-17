@@ -144,4 +144,6 @@ if __name__ == '__main__':
             Ackley1.run()
         if solution==6:
             tabuSearchAckley(args)
+        if solution==7:
+            simulatedAnnealingAckley(args)
 

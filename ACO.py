@@ -3,6 +3,7 @@ from random import randint
 from numpy.random import choice
 import time
 import Graph
+import math
 
 
 def ACO(problem, args):
@@ -115,8 +116,28 @@ def updatePheremons(pheremonMatrix, bestPath, pathCost, q, p):
 
 
 
+def calc_Ackley_value( array):
 
+    number1 = -20 * math.exp(-0.2 * math.sqrt((1 / 10) * segma(array)))
+    number2 = -math.exp((1 / 10) * segma2(array)) + 20 + math.exp(1)
+    # print(math.exp(1))
+    # print(number1,number2)
+    return number1 + number2
+
+def segma( array):
+    sum = 0
+    for i in range(10):
+        sum += (array[i] * array[i])
+        # print(sum)
+    return sum
+
+def segma2( array):
+    sum = 0
+    for i in range(10):
+        sum += math.cos(array[i] * math.pi * 2)
+    return sum
 def ACOAckley( args):
+    size=10
     myarray=[]
     startTime = time.time()
     pheremonMatrix = [[float(1000) for _ in range(10)] for _ in range(10)]
@@ -129,8 +150,8 @@ def ACOAckley( args):
     local_counter = 0
     for _ in range(args.maxIter):
         iterTime = time.time()
-        tempPath = getPath(problem, pheremonMatrix, args)
-        tempFitness, _ = problem.calcPathCost(tempPath)
+        tempPath = getPath(pheremonMatrix, args)
+        tempFitness=calc_Ackley_value(tempPath)
         if tempFitness < currentBestFitness:
             currentBestFitness = tempFitness
             currentBestPath = tempPath
@@ -150,7 +171,7 @@ def ACOAckley( args):
         print('cost = ', bestFitness)
         print()
         if local_counter == args.localOptStop:  # if fallen into local optimum, reset and continue with the algorithm
-            pheremonMatrix = [[float(1000) for _ in range(problem.size)] for _ in range(problem.size)]
+            pheremonMatrix = [[float(1000) for _ in range(size)] for _ in range(size)]
             local_counter = 0
             if bestFitness < globalFitness:
                 globalBest = bestPath
@@ -162,5 +183,3 @@ def ACOAckley( args):
 
     print('Time elapsed: ', time.time() - startTime)
     Graph.draw(myarray,"hi")
-    problem.best = globalBest   # save the solution and its fitness
-    problem.bestFitness = globalFitness
